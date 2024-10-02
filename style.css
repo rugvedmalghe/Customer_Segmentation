@@ -1,0 +1,41 @@
+/* Global Styles */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+}
+
+/* Container Styles */
+.container {
+    max-width: 800px;
+    margin: auto;
+}
+
+/* Heading Styles */
+h1 {
+    color: #343a40;
+    margin-bottom: 20px;
+}
+
+/* Button Styles */
+.btn {
+    border-radius: 25px;
+    font-size: 16px;
+}
+
+/* Result Section */
+#result {
+    margin-top: 20px;
+    padding: 20px;
+    background-color: #ffffff;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+#result h2 {
+    color: #343a40;
+}
+
+#result p {
+    font-size: 16px;
+    color: #6c757d;
+}

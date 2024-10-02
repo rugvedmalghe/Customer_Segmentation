@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Segmentation</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1 class="text-center">Customer Segmentation</h1>
+        <div class="text-center mb-4">
+            <button id="segmentBtn" class="btn btn-primary">Segment Customers</button>
+        </div>
+        <div id="chartContainer" class="mb-4">
+            <canvas id="segmentationChart"></canvas>
+        </div>
+        <div id="result">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script>
+        document.getElementById('segmentBtn').addEventListener('click', function() {
+            fetch('/segment')
+                .then(response => response.json())
+                .then(data => {
+                    console.log('Segmented data:', data);
+                    const resultDiv = document.getElementById('result');
+                    const clusters = {};
+                    data.forEach(item => {
+                        if (!clusters[item.ClusterName]) {
+                            clusters[item.ClusterName] = 0;
+                        }
+                        clusters[item.ClusterName]++;
+                    });
+
+                    const ctx = document.getElementById('segmentationChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'pie',
+                        data: {
+                            labels: Object.keys(clusters),
+                            datasets: [{
+                                data: Object.values(clusters),
+                                backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            plugins: {
+                                legend: {
+                                    position: 'top',
+                                },
+                                tooltip: {
+                                    callbacks: {
+                                        label: function(tooltipItem) {
+                                            const label = tooltipItem.label || '';
+                                            if (label) {
+                                                return `${label}: ${tooltipItem.raw} customers`;
+                                            }
+                                            return label;
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    });
+
+                    resultDiv.innerHTML = '<h2>Segmentation Results:</h2>';
+                    data.forEach(item => {
+                        resultDiv.innerHTML += `<p>Customer ID: ${item.CustomerID}, Cluster: ${item.ClusterName}</p>`;
+                    });
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    </script>
+</body>
+</html>
